@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="ass/styles.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="menu-item active">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
+            </svg>
+            主页
+        </div>
+        <div class="menu-item">
+            <svg viewBox="0 0 24 24">
+                <path d="M2 3h20a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                <rect x="3" y="3" width="18" height="18"></rect>
+            </svg>
+            作品
+        </div>
+        <div class="menu-item">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 22c1 0 2-1 2-2V8c0-1-1-2-2-2s-2 1-2 2v12c0 1 1 2 2 2zm0-6V9"></path>
+            </svg>
+            隐私
+        </div>
+        <div class="menu-item">
+            <svg viewBox="0 0 24 24">
+                <path d="M3 8l12-8 12 8"></path>
+                <path d="M12 22v-4"></path>
+                <path d="M3 16l12-8 12 8"></path>
+            </svg>
+            好友
+        </div>
+        <div class="menu-item">
+            <svg viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+            </svg>
+            社区
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="profile-card">
+            <div class="user-info">
+                <div class="avatar" id="avatarBox">
+                    <img src="https://via.placeholder.com/160" alt="头像" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="avatar-upload" onclick="document.getElementById('avatarInput').click()">更换头像</div>
+                </div>
+                <div class="user-name">豆包</div>
+                <div class="user-email">doubao@example.com</div>
+            </div>
+            <div class="asset-list">
+                <div class="asset-item">
+                    <div class="asset-number">1,234</div>
+                    <div class="asset-label">点券</div>
+                </div>
+                <div class="asset-item">
+                    <div class="asset-number">56,789</div>
+                    <div class="asset-label">金币</div>
+                </div>
+                <div class="asset-item">
+                    <div class="asset-number">等级 15</div>
+                    <div class="asset-label">成就</div>
+                </div>
+            </div>
+            <button class="upload-btn" onclick="document.getElementById('workInput').click()">上传作品</button>
+        </div>
+        <div class="works-section">
+            <div style="font-size: 18px; font-weight: 600; margin-bottom: 24px;">我的作品</div>
+            <div class="work-list" id="workList">
+                <!-- 作品项动态生成 -->
+            </div>
+            <input type="file" id="workInput" multiple>
+            <input type="file" id="avatarInput">
+        </div>
+        <div class="community-section">
+            <div class="community-title">社区</div>
+            <button class="new-post-btn" onclick="openNewPostModal()">发布新帖子</button>
+            <div class="post-list" id="postList">
+                <!-- 帖子列表动态生成 -->
+            </div>
+        </div>
+        <div class="new-post-modal" id="newPostModal">
+            <div class="new-post-form">
+                <input type="text" id="postTitle" placeholder="帖子标题">
+                <textarea id="postContent" placeholder="帖子内容"></textarea>
+                <button onclick="submitNewPost()">发布</button>
+                <button onclick="closeNewPostModal()">取消</button>
+            </div>
+        </div>
+        <div class="post-detail-modal" id="postDetailModal">
+            <div class="post-detail">
+                <div class="post-detail-title" id="postDetailTitle"></div>
+                <div class="post-detail-content" id="postDetailContent"></div>
+                <button class="close-modal-btn" onclick="closePostDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 头像上传预览
+        const avatarInput = document.getElementById('avatarInput');
+        const avatarBox = document.getElementById('avatarBox');
+        avatarInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    avatarBox.innerHTML = img.outerHTML + '<div class="avatar-upload" onclick="document.getElementById(\'avatarInput\').click()">更换头像</div>';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 作品上传处理
+        const workInput = document.getElementById('workInput');
+        const workList = document.getElementById('workList');
+        workInput.addEventListener('change', function (e) {
+            const files = e.target.files;
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const workItem = document.createElement('div');
+                    workItem.className = 'work-item';
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+
+                    const deleteBtn = document.createElement('div');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.textContent = '删除';
+                    deleteBtn.onclick = function () {
+                        workItem.remove();
+                    };
+
+                    workItem.appendChild(img);
+                    workItem.appendChild(deleteBtn);
+                    workList.appendChild(workItem);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // 社区功能相关代码
+        const postList = document.getElementById('postList');
+        const newPostModal = document.getElementById('newPostModal');
+        const postTitleInput = document.getElementById('postTitle');
+        const postContentInput = document.getElementById('postContent');
+        const postDetailModal = document.getElementById('postDetailModal');
+        const postDetailTitle = document.getElementById('postDetailTitle');
+        const postDetailContent = document.getElementById('postDetailContent');
+
+        // 模拟帖子数据
+        const posts = [];
+
+        function openNewPostModal() {
+            newPostModal.style.display = 'flex';
+        }
+
+        function closeNewPostModal() {
+            newPostModal.style.display = 'none';
+            postTitleInput.value = '';
+            postContentInput.value = '';
+        }
+
+        function submitNewPost() {
+            const title = postTitleInput.value;
+            const content = postContentInput.value;
+            if (title && content) {
+                const newPost = { title, content };
+                posts.push(newPost);
+                renderPosts();
+                closeNewPostModal();
+            }
+        }
+
+        function renderPosts() {
+            postList.innerHTML = '';
+            posts.forEach(post => {
+                const postItem = document.createElement('div');
+                postItem.className = 'post-item';
+                postItem.onclick = () => showPostDetail(post);
+
+                const postTitle = document.createElement('div');
+                postTitle.className = 'post-title';
+                postTitle.textContent = post.title;
+
+                const postContent = document.createElement('div');
+                postContent.className = 'post-content';
+                postContent.textContent = post.content.slice(0, 100) + '...';
+
+                postItem.appendChild(postTitle);
+                postItem.appendChild(postContent);
+                postList.appendChild(postItem);
+            });
+        }
+
+        function showPostDetail(post) {
+            postDetailTitle.textContent = post.title;
+            postDetailContent.textContent = post.content;
+            postDetailModal.style.display = 'flex';
+        }
+
+        function closePostDetailModal() {
+            postDetailModal.style.display = 'none';
+        }
+
+        // 初始渲染帖子
+        renderPosts();
+    </script>
+</body>
+
+</html>
