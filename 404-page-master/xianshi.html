@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Error</title>
+    <link rel="stylesheet" href="silosi.css">
+        <style>
+            /* 默认鼠标样式应用到所有元素 */
+            *, *::before, *::after {
+                cursor: url('images/shubiao/Arrow.cur'), url('images/shubiao/Arrow.png'), auto !important;
+            }
+
+            /* 可点击元素的鼠标样式 */
+            a, button, input[type="submit"], input[type="button"], .link, [role="button"],
+            select, input[type="radio"], input[type="checkbox"], label {
+                cursor: url('images/shubiao/Link.cur'), url('images/shubiao/Link.png'), pointer !important;
+            }
+
+            /* 文本输入区域的鼠标样式 */
+            input[type="text"], input[type="password"], input[type="email"], 
+            input[type="tel"], input[type="number"], input[type="search"], 
+            textarea {
+                cursor: text !important;
+            }
+
+            /* 确保滚动条和选择文本时使用默认鼠标样式 */
+            ::-webkit-scrollbar-thumb {
+                cursor: default !important;
+            }
+            ::selection {
+                cursor: text !important;
+            }
+        </style>
+</head>
+
+<body>
+    <main class="content">
+        <div class="page-404">
+            <h1>404</h1>
+            <p>You are lost this page</p>
+            <p class="info">
+                You've reached the edge of the universe. The page you've requested can't be found. Don't worry, you can
+                return to the previous page.
+            </p>
+            <a href="../index.html"><button class="go-home btn">GO HOME</button></a>
+            <a href="../player.html"><button class="back btn">BACK</button></a>
+        </div>
+        <div class="astronaut">
+            <img src="./asset/astronaut.png" class="astronaut-img" alt="Astronaut floating in space">
+        </div>
+    </main>
+</body>
+
+</html>
